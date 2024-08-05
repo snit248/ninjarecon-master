@@ -60,6 +60,7 @@ bool IsUnusedSlot(Int_t slot) {
 bool IsNoisySlot(Int_t slot) {
   //if (slot == 150) return true;
   //else return false;
+  return false;
 }
 
 bool IsDeadSlot(Int_t slot) {
@@ -71,6 +72,7 @@ bool IsDeadSlot(Int_t slot) {
       slot == 207) return true;
   else return false;
   */
+ return false;
 }
 
 Double_t ConvertTotToPe(Int_t time_over_threshold) {
