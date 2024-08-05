@@ -58,17 +58,19 @@ bool IsUnusedSlot(Int_t slot) {
 }
 
 bool IsNoisySlot(Int_t slot) {
-  if (slot == 150) return true;
-  else return false;
+  //if (slot == 150) return true;
+  //else return false;
 }
 
 bool IsDeadSlot(Int_t slot) {
+  /*
   if (slot == 92 ||
       slot == 156 ||
       slot == 157 ||
       slot == 163 ||
       slot == 207) return true;
   else return false;
+  */
 }
 
 Double_t ConvertTotToPe(Int_t time_over_threshold) {
@@ -100,7 +102,9 @@ void AddNinjaAsHitSummary(B2SpillSummary &output_spill_summary,
 	if ( ( ( subrunid == 0 &&
 		 std::fabs(lt[slot] - LEADTIME_PEAK_2019[i_bunch_difference - 1]) < LEADTIME_HALF_WIDTH ) ||
 	       ( subrunid == 1 &&
-		 std::fabs(lt[slot] - LEADTIME_PEAK_2020[i_bunch_difference - 1]) < LEADTIME_HALF_WIDTH ) ) &&
+		 std::fabs(lt[slot] - LEADTIME_PEAK_2020[i_bunch_difference - 1]) < LEADTIME_HALF_WIDTH ) ||
+	       ( subrunid == 2 &&
+		 std::fabs(lt[slot] - LEADTIME_PEAK_2023[i_bunch_difference - 1]) < LEADTIME_HALF_WIDTH ) ) &&
 	     lt[slot] - tt[slot] > TOT_MIN &&
 	     lt[slot] - tt[slot] < TOT_MAX ) {
 	  is_after_hit = true;
