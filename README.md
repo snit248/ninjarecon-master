@@ -2,6 +2,7 @@
 
 This is a set of tools for (muon) track matching between WAGASCI/BabyMIND detectors
 and NINJA detectors (scintillation tracker only).
+Modified by S.Ito.
 
 ## External dependencies (same as WAGASCI+BabyMIND Geant4 simulation)
 
