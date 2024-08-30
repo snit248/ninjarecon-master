@@ -34,10 +34,11 @@
 
 #include "TrackMatch.hpp"
 
+//aliasのようにboost::logをloggingという名前で呼び出せるようにしている
 namespace logging = boost::log;
 
 // Comparator for sort functions
-
+//B2HitSummeryをポインタ渡し
 bool CompareNinjaHits(const B2HitSummary* lhs, const B2HitSummary* rhs) {
   if ( lhs->GetBunch() != rhs->GetBunch() )
     return lhs->GetBunch() < rhs->GetBunch();
@@ -50,11 +51,13 @@ bool CompareNinjaHits(const B2HitSummary* lhs, const B2HitSummary* rhs) {
   case B2View::kTopView :
     return lhs->GetScintillatorPosition().GetValue().X()
       < rhs->GetScintillatorPosition().GetValue().X();
+  //どの条件にも引っ掛からなかったらエラーを投げる　このエラーはcatchブロックで捕捉される
   default :
     throw std::invalid_argument("View not valid : " + lhs->GetView());
   }
 }
 
+//またよくわからないがB2HitSummaryの左と右を比較してその真偽値を返している
 bool CompareBabyMindHitsInOneTrack(const B2HitSummary* lhs, const B2HitSummary *rhs) {
   if ( lhs->GetView()  != rhs->GetView() )
     return lhs->GetView() < rhs->GetView();
@@ -66,7 +69,7 @@ bool CompareBabyMindHitsInOneTrack(const B2HitSummary* lhs, const B2HitSummary *
 }
 
 // NINJA cluster creation
-
+//<>はベルトルの要素 nijan_hitsはB2HitSummaryのポインタの配列 ベクトルはpushbackで追加していく
 void CreateNinjaCluster(std::vector<const B2HitSummary* > ninja_hits,
 			NTBMSummary* ninja_clusters) {
   std::sort(ninja_hits.begin(), ninja_hits.end(), CompareNinjaHits);
@@ -286,8 +289,9 @@ std::vector<std::vector<std::vector<std::vector<double> > > > GenerateMergedPosi
 
 }
 
-
+//BMでのヒット位置の計算
 std::vector<std::vector<double> > FitBabyMind(const B2TrackSummary *track, int datatype) {
+  //2個のベクトルの要素を持つベクトル
   std::vector<std::vector<double> > param(2);
   param.at(0).resize(2); param.at(1).resize(2);
   for ( int iview = 0; iview < 2; iview++ )
@@ -934,6 +938,7 @@ int main(int argc, char *argv[]) {
 
   BOOST_LOG_TRIVIAL(info) << "==========NINJA Track Matching Start==========";
 
+  // 引数が5個でなければ終了
   if ( argc != 5 ) {
     BOOST_LOG_TRIVIAL(error) << "Usage : " << argv[0]
 			     << " <input B2 file path> <output NTBM file path> <z shift> <MC(0)/data(1)>";
@@ -941,8 +946,10 @@ int main(int argc, char *argv[]) {
   }
 
   try {
+    //B2ReaderクラスでB2ファイルを読み込む
     B2Reader reader(argv[1]);
 
+    //TrackMatch後のTTreeを作成する
     TFile *ntbm_file = new TFile(argv[2], "recreate");
     TTree *ntbm_tree = new TTree("tree", "NINJA BabyMIND Original Summary");
     NTBMSummary* my_ntbm = nullptr;
@@ -952,10 +959,12 @@ int main(int argc, char *argv[]) {
     int datatype = std::stoi(argv[4]);
 
     int nspill = 0;
-
+    //ここでReading spill with index
     while ( reader.ReadNextSpill() > 0 ) {
 
+      //spillsummaryのアドレスを返す
       auto &input_spill_summary = reader.GetSpillSummary();
+      //B2BeamSummaryからtimestamp_を取得
       int timestamp = input_spill_summary.GetBeamSummary().GetTimestamp();
       BOOST_LOG_TRIVIAL(debug) << "entry : " << reader.GetEntryNumber();
       BOOST_LOG_TRIVIAL(debug) << "timestamp : " << timestamp;
