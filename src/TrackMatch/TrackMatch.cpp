@@ -927,9 +927,9 @@ int main(int argc, char *argv[]) {
 
   logging::core::get()->set_filter
     (
-     logging::trivial::severity >= logging::trivial::info
+     //logging::trivial::severity >= logging::trivial::info
      //logging::trivial::severity >= logging::trivial::debug
-     //logging::trivial::severity >= logging::trivial::trace
+     logging::trivial::severity >= logging::trivial::trace
      );
 
   BOOST_LOG_TRIVIAL(info) << "==========NINJA Track Matching Start==========";
@@ -961,7 +961,7 @@ int main(int argc, char *argv[]) {
       BOOST_LOG_TRIVIAL(debug) << "timestamp : " << timestamp;
  
       TransferBeamInfo(input_spill_summary, my_ntbm);
-      TransferMCInfo(input_spill_summary, my_ntbm);
+      if(datatype == B2DataType::kMonteCarlo)TransferMCInfo(input_spill_summary, my_ntbm);
 
       // Collect all NINJA hits
       auto it_hit = input_spill_summary.BeginHit();
